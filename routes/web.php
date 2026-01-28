@@ -12,3 +12,4 @@ use App\Http\Controllers\PrincipalController;
 
 Route::get('/hello',HomeController::class);//index
 Route::get('post/mensaje',[PostController::class,'Mensaje']);//metodo
+Route::get('post/about/{param?}/{nombre?}',[PostController::class,'About']);
