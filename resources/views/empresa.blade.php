@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-@extends('layout.app')
+@extends('layouts.app')
 @section('titulopagina','Empresa E-commerce')
 @push('css') 
     <style>
@@ -34,35 +34,9 @@
 @endsection
 @section("actividad",$actividad)
 @section("texto_ejemplo")
-    {{texto_ejemplo}}
+    {{$texto_ejemplo}}
 @endsection
 @section("contenido_listado")
     <h2>Listado de Usuarios Registrados</h2>
-    <ul>
-        @if(isset($listadousuarios))
-            <table id='tablausuarios' class="table
-            table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Teléfono</th>
-                        <th>Calle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($listadousuarios as $usuario)
-                    <tr>
-                        <td>{{$usuario->name}}</td>
-                        <td>{{$usuario->email}}</td>
-                        <td>{{$usuario->telefono}}</td>
-                        <td>{{$usuario->calle}}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        @else
-            <p>La variable de listado de usuarios no está definida</p>
-        @endif
-    </ul>
+ 
 @endsection
