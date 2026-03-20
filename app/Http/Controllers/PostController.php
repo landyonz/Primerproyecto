@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function Mensaje(): string{
+    public function Mensaje(){
         return "Hola desde el controlador de PostController";
     }
 
-    public function About($param=null,$nombre=null){
+    public function About($param=null, $nombre=null){
         $datos=['parametro'=>$param,'nombre'=>$nombre];
         return view('about',$datos);
         //return view('about',compact('param','nombre'));
