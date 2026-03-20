@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function Mensaje(): string{
+    public function Mensaje(){
         return "Hola desde el controlador de PostController";
     }
 

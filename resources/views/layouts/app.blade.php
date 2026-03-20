@@ -69,31 +69,35 @@
       </ul>
       <hr class="d-sm-none">
     </div>
+
     <div class="col-sm-8">
       <h2>TITLE HEADING</h2>
       <h5>Title description, Dec 7, 2020</h5>
-      <div class="fakeimg"><img src="Imagenes\Imagen02.jfif"
-      class='img-responsive'></div>
+      <div class="fakeimg">
+        <img src="Imagenes\Imagen02.jfif" class='img-responsive'>
+      </div>
       <p>Some text...</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <span class="badge bg-primary">@yield("texto ejemplo")</span>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum
+        consectectur adipiscing elit, sed do eiudmod tempor incididunt ut labore et 
+        dolore magna aliqua. Ut enim ad minim veniam, quis notrud exercitattion
+      ullamco.</p>
+      <span class="badge bg-primary">@yield('texto_ejemplo')</span>
 
-      <h3>Column 1</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 2</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 3</h3>        
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+      <h2 class="mt-5">TITLE HEADING</h2> 
+      <h5>Title description, Sep 2, 2020</h5> 
+      <div class="fakeimg">
+        <img src="Imagenes\Imagen03.jpg" class='img-responsive' >
+      </div> 
+
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id 
+        est laborum consectetur adipiscing elit, sed do eiusmod tempor 
+        incididunt ut labore et dolore magna aliqua. 
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+      </p>
+       </div>
     </div>
   </div>
-</div>
 
 <div class="container mt-5 table-responsive">
   @yield('contenido_listado')
@@ -118,13 +122,37 @@
   <i class="fa-brands fa-tiktok"></i>
 </div>
 
+<div class="modal" tabindex="-1" id="myModal" role="dialog">
+  <form id="editForm" method="POST">
+    @csrf @method('PUT')
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">@yield('titulo_modal')</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type='hidden' name='id' id='id'>
+          <input type='text' name='name' id='name' class="form-control">
+          <input type='text' name='calle' id='calle' class="form-control">
+          <p>Modal body text goes here.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
 
-</body>
-</html>
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
     $(document).ready(function () {
         $('#tablausuarios').DataTable({
           columns: [
@@ -132,7 +160,79 @@
               { data: 'email' },
               { data: 'telefono' },
               { data: 'calle' },
+              { data: 'acciones', orderable: false, searchable: false }
           ]
         });
     });
-</script>
+
+    function carga_modal(id, nombre, calle){
+      $(#'id').val(id);
+      $(#'name').val(nombre);
+      $(#'calle').val(calle);
+      $(#'editForm').attr('action','/actualizar-dato/'+id);
+      $(#'myModal').val('show');
+    }
+
+    $("#editForm").on('submit',function(e){
+      e.preventDefault();
+      alert($(this).serialize());
+      $.ajax({
+        url:$(this).attr('action'),
+        type:'POST',
+        method:'PUT',
+        data:$(this).serialize(),
+        success: function(response){
+          //console.log(response);
+          $("#myModal").modal('hide');
+          location.reload();
+        },
+        error:function(xhr){
+          console.log(xhr.responseText);
+        }
+      })
+    })
+
+    function eliminar_logico(id) {
+            if (confirm("¿Estás seguro de que deseas desactivar este registro (eliminación lógica)?")) {
+                $.ajax({
+                    url: '/eliminar-logico/' + id,
+                    type: 'POST',
+                    data: {
+                        _method: 'PUT',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert(response.mensaje);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        alert("Hubo un error al intentar desactivar el registro.");
+                    }
+                });
+            }
+        }
+
+        function eliminar_fisico(id) {
+            if (confirm("¡ADVERTENCIA! ¿Estás seguro de eliminar este registro por completo (eliminación física)? Esta acción no se puede deshacer.")) {
+                $.ajax({
+                    url: '/eliminar-fisico/' + id,
+                    type: 'POST',
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert(response.mensaje);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        alert("Hubo un error al intentar eliminar el registro.");
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
